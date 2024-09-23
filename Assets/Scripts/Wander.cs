@@ -55,7 +55,7 @@ public class Wander : SteeringBehaviour
         Vector3 desiredDirection = new Vector3(noiseX, noiseY, 0).normalized;
 
         //Get The Desired Velocity For Wander And Limit To maxSpeed
-        Vector3 desiredVelocity = desiredDirection * steeringAgent.MaxCurrentSpeed;
+        desiredVelocity = desiredDirection * steeringAgent.MaxCurrentSpeed;
 
         //Calculate Steering Velocity
         steeringVelocity = desiredVelocity;
