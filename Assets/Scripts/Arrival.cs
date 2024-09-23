@@ -40,7 +40,7 @@ public class Arrival : SteeringBehaviour
 		{
 			hasArrived = false;
 
-            //Get The Desired Velocity For Seek And Limit To maxSpeed
+            //Get The Desired Velocity For Arrival And Limit To maxSpeed
             desiredVelocity = Vector3.Normalize(targetPosition - transform.position) * steeringAgent.MaxCurrentSpeed;
 
             //Calculate Steering Velocity
