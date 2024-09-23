@@ -2,8 +2,8 @@
 
 public class Seek : SteeringBehaviour
 {
-	public override Vector3 UpdateBehaviour(SteeringAgent steeringAgent)
-	{
+    public override Vector3 UpdateBehaviour(SteeringAgent steeringAgent)
+    {
         //Get The Target Position From The Mouse Input
         Vector3 targetPosition = Helper.GetMousePosition();
 
@@ -12,6 +12,7 @@ public class Seek : SteeringBehaviour
 
         //Calculate Steering Velocity
         steeringVelocity = desiredVelocity - steeringAgent.CurrentVelocity;
-		return steeringVelocity;
-	}
+
+        return steeringVelocity;
+    }
 }
