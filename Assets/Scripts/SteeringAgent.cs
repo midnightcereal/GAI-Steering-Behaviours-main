@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SteeringAgent : MonoBehaviour
 {
@@ -11,6 +13,8 @@ public class SteeringAgent : MonoBehaviour
 	[SerializeField]
 	[Range(0.005f, 5.0f)]
 	protected float maxUpdateTimeInSecondsForAI = DefaultUpdateTimeInSecondsForAI;
+
+	[SerializeField] Slider aiTimeSlider;
 
 	/// <summary>
 	/// Returns the maximum speed the agent can have
@@ -44,10 +48,18 @@ public class SteeringAgent : MonoBehaviour
 
 	private float updateTimeInSecondsForAI = DefaultUpdateTimeInSecondsForAI;
 
-	/// <summary>
-	/// Called once per frame
-	/// </summary>
-	private void Update()
+	[SerializeField] TextMeshProUGUI speedText;
+
+    private void Start()
+    {
+        aiTimeSlider.value = maxUpdateTimeInSecondsForAI;
+        aiTimeSlider.onValueChanged.AddListener(OnSliderValueChanged);
+    }
+
+    /// <summary>
+    /// Called once per frame
+    /// </summary>
+    private void Update()
 	{
 		updateTimeInSecondsForAI += Time.deltaTime;
 		if(updateTimeInSecondsForAI >= maxUpdateTimeInSecondsForAI)
@@ -59,8 +71,10 @@ public class SteeringAgent : MonoBehaviour
 		UpdatePosition();
 		UpdateDirection();
 
-		// Show debug lines in scene view
-		foreach (SteeringBehaviour currentBehaviour in steeringBehvaiours)
+        speedText.text = CurrentVelocity.magnitude.ToString("F0");
+
+        // Show debug lines in scene view
+        foreach (SteeringBehaviour currentBehaviour in steeringBehvaiours)
 		{
 			currentBehaviour.DebugDraw(this);
 		}
@@ -105,7 +119,7 @@ public class SteeringAgent : MonoBehaviour
 		CurrentVelocity += limitedSteeringVelocity;
 		CurrentVelocity = Helper.LimitVector(CurrentVelocity, MaxCurrentSpeed);
 
-		transform.position += CurrentVelocity * Time.deltaTime;
+        transform.position += CurrentVelocity * Time.deltaTime;
 
 		// The code below is just to wrap the screen for the agent os if if goes off one side it returns on the other (like in the game Asteroids)
 		Vector3 position = transform.position;
@@ -145,4 +159,11 @@ public class SteeringAgent : MonoBehaviour
 			transform.up = Vector3.Normalize(new Vector3(CurrentVelocity.x, CurrentVelocity.y, 0.0f));
 		}
 	}
+
+    //Method To Handle Slider Value Changes
+    private void OnSliderValueChanged(float value)
+    {
+        maxUpdateTimeInSecondsForAI = value;
+    }
+
 }
