@@ -34,7 +34,9 @@ public class Wander : SteeringBehaviour
 	public override void DebugDraw(SteeringAgent steeringAgent)
 	{
 		// Look at the arrival steering behaviour to see what you might want to draw and where to help with debugging
+		var debugCircleOffset = new Vector3(steeringAgent.transform.position.x, steeringAgent.transform.position.y + circleDistance, steeringAgent.transform.position.z);
+        DebugDrawCircle("DebugCircle " + GetType().Name, debugCircleOffset, circleRadius, Color.magenta);
 
-		base.DebugDraw(steeringAgent);
+        base.DebugDraw(steeringAgent);
 	}
 }
