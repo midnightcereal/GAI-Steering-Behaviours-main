@@ -2,37 +2,51 @@
 
 public class Arrival : SteeringBehaviour
 {
-	/// <summary>
-	/// Controls how far from the target position should the agent start to slow down
-	/// </summary>
-	[SerializeField]
-	protected float arrivalRadius = 200.0f;
+	[SerializeField] protected float arrivalRadius = 200.0f;
+
+	bool hasArrived = false;
 
 	public override Vector3 UpdateBehaviour(SteeringAgent steeringAgent)
 	{
         //Get The Target Position From The Mouse Input
         Vector3 targetPosition = Helper.GetMousePosition();
 
-		//Get The Desired Velocity For Arrival And Limit To maxSpeed
-		var distance = targetPosition - transform.position;
-        desiredVelocity = Vector3.Normalize(distance) * steeringAgent.MaxCurrentSpeed;
+		float targetDistance = Vector3.Distance(transform.position, targetPosition);
 
-		Debug.Log("Dist: " + distance.magnitude);
+        //If The Agent Is Within The Target Area, Stop
+        if (targetDistance <= 1)
+        {
+            hasArrived = true;
 
-		if(distance.magnitude > targetPosition.magnitude - transform.position.magnitude)
-		{
-			Debug.Log("Target Pos > Dist");
-            desiredVelocity = desiredVelocity - desiredVelocity;
-            Debug.Log("Desired Velocity: " + desiredVelocity);
+            //Set Velocity To 0
+            desiredVelocity = Vector3.zero;
+
+            //Calculate Steering Velocity
+            steeringVelocity = Vector3.zero - steeringAgent.CurrentVelocity;
         }
-		if (distance.magnitude < 100f)
+        else if (targetDistance < arrivalRadius)
+        {
+            //Once Entered Arrival Radius, Gradually Slow Down
+            hasArrived = false;
+
+            //Reduce Speed Based On The Remaining Distance To The Target
+            float slowDownFactor = targetDistance / arrivalRadius;
+            desiredVelocity = Vector3.Normalize(targetPosition - transform.position) * steeringAgent.MaxCurrentSpeed * slowDownFactor;
+
+            //Calculate Steering Velocity
+            steeringVelocity = desiredVelocity - steeringAgent.CurrentVelocity;
+        }
+        else if(!hasArrived)
 		{
-			//desiredVelocity = desiredVelocity - desiredVelocity;
-   //         Debug.Log("Desired Velocity: " + desiredVelocity);
+			hasArrived = false;
+
+            //Get The Desired Velocity For Seek And Limit To maxSpeed
+            desiredVelocity = Vector3.Normalize(targetPosition - transform.position) * steeringAgent.MaxCurrentSpeed;
+
+            //Calculate Steering Velocity
+            steeringVelocity = desiredVelocity - steeringAgent.CurrentVelocity;
         }
 
-		//Calculate Steering Velocity
-		steeringVelocity = desiredVelocity - steeringAgent.CurrentVelocity;
         return steeringVelocity;
     }
 
