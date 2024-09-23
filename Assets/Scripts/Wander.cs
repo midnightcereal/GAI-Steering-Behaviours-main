@@ -65,8 +65,6 @@ public class Wander : SteeringBehaviour
 
 	public override void DebugDraw(SteeringAgent steeringAgent)
 	{
-        // Look at the arrival steering behaviour to see what you might want to draw and where to help with debugging
-
         //Display Circle Infront Of The Current Direction Of Movement
         Vector3 circlePosition = transform.position + (steeringAgent.CurrentVelocity.normalized * circleDistance);
         DebugDrawCircle("DebugCircle " + GetType().Name, circlePosition, circleRadius, Color.magenta);
